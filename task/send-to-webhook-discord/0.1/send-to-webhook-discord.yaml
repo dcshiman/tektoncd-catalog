@@ -32,6 +32,10 @@ spec:
     type: string
     description: url avatar image
     default: 'https://github.com/tektoncd.png'
+  - name: embed
+    type: string
+    description: embed json excaped string
+    default: '[]'
   steps:
   - name: post
     image: docker.io/curlimages/curl:7.70.0@sha256:031df77a11e5edded840bc761a845eab6e3c2edee22669fb8ad6d59484b6a1c4 #tag: 7.70.0
@@ -39,7 +43,7 @@ spec:
       #!/usr/bin/env sh
       MESSAGE=$(echo "${MESSAGE}" | sed -e 's/\"/\\\\"/g')
       BOTNAME=$(echo "${BOTNAME}" | sed -e 's/\"/\\\\"/g')
-      JSON="{\"content\": \"${MESSAGE}\", \"username\": \"${BOTNAME}\", \"avatar_url\": \"${AVATAR}\"}"
+      JSON="{\"content\": \"${MESSAGE}\", \"username\": \"${BOTNAME}\", \"avatar_url\": \"${AVATAR}\", \"embed\" : ${EMBED} }"
       curl -X POST "${URL}" -H 'Content-Type: application/json' -d "${JSON}"
     env:
     - name: URL
@@ -53,3 +57,5 @@ spec:
       value: $(params.bot-name)
     - name: AVATAR
       value: $(params.avatar-url)
+    - name: EMBED
+      value: $(params.embed)
